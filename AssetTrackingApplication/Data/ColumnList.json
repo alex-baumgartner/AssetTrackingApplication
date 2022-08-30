@@ -1,0 +1,16 @@
+{
+  "Name": "A",
+  "AssetClass": "B",
+  "TotalValue": "C",
+  "PreviousValue": "D",
+  "InvestedCapital": "E",
+  "PricePerShare": "F",
+  "CostBasis": "G",
+  "Performance": "H",
+  "GainRelative": "I",
+  "GainTotal": "J",
+  "AssetShare": "K",
+  "Amount": "L",
+  "InitialAmount": "M",
+  "RelativeContribution": "N"
+}

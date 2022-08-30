@@ -1,0 +1,27 @@
+[
+  {
+    "Name": "Bank Accounts",
+    "FirstRow": 2,
+    "LastRow": 7
+  },
+  {
+    "Name": "ETF",
+    "FirstRow": 10,
+    "LastRow": 17
+  },
+  {
+    "Name": "Stocks",
+    "FirstRow": 20,
+    "LastRow": 37
+  },
+  {
+    "Name": "Bonds",
+    "FirstRow": 40,
+    "LastRow": 47
+  },
+  {
+    "Name": "Cryptocurrencies",
+    "FirstRow": 50,
+    "LastRow": 57
+  }
+]

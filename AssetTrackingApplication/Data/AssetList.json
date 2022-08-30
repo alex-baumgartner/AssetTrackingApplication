@@ -1,0 +1,12 @@
+{
+  "Checking Account": 2,
+  "Stock Broker Cash Account": 3,
+  "MSCI World": 10,
+  "MSCI Emerging Markets": 11,
+  "SP500": 12,
+  "Tesla [TSLA]": 20,
+  "Paypal [PYPL]": 21,
+  "Alphabet [GOOGL]": 22,
+  "Bitcoin": 50,
+  "Etherium": 51
+}
