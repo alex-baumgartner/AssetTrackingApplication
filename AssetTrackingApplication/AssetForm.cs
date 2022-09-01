@@ -13,67 +13,56 @@ namespace AssetTrackingApplication
     public partial class AssetForm : Form
     {
         List<AssetClass> _assetClasses;
+        Dictionary<string, int> _assets;
         public AssetForm(List<AssetClass> assetClasses, Dictionary<string, int> assets)
         {
             _assetClasses = assetClasses;
+            _assets = assets;
             InitializeComponent();
+            var assetClassNames = _assetClasses.Select(a => a.Name).ToList();
+            cb_assetClasses.DataSource = assetClassNames;
         }
 
-        private int CalculateRowForAssetClass()
-        {
-            var previousLastRow = _assetClasses.OrderByDescending(a => a.LastRow).First().LastRow;
-            var firstRow = previousLastRow + 3; //Skip two rows for formatting reasons
-            
-            return firstRow;
-        }
-
+        
         private void btn_cancel_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-
-        private bool AllFieldsFilled()
-        {
-            if(txt_name.Text != "" && txt_firstRow.Text != "" && txt_classItemAmount.Text != "")
-            {
-                return true;
-            }
-            return false;
-        }
-
         private void btn_confirm_Click(object sender, EventArgs e)
         {
-            if (AllFieldsFilled())
+            if (string.IsNullOrEmpty(txt_name.Text))
             {
-                CheckForValidIntValue(txt_firstRow);
-                CheckForValidIntValue(txt_classItemAmount);
+                MessageBox.Show("Not all fields were filled out - please fill out name!", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            var assetRow = CalculateRowForAsset();
 
-                int firstRow = Convert.ToInt32(txt_firstRow.Text);
-                int lastRow = firstRow + Convert.ToInt32(txt_classItemAmount.Text);
-                var assetClass = new AssetClass(txt_name.Text, firstRow, lastRow);
-                _assetClasses.Add(assetClass);
-
-                AssetClass.UpdateAssetClassFile(_assetClasses);
+            if (assetRow != 0)
+            {
+                _assets.Add(txt_name.Text, assetRow);
                 Close();
             }
             else
             {
-                MessageBox.Show("Not all fields were filled out!", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Could not insert asset - please check asset class for available rows!", "Insert asset failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        private int CalculateRowForAsset()
+        {
+            var selectedAssetClass = _assetClasses.SingleOrDefault(a => a.Name == cb_assetClasses.Text);
+
+            var assetRowsOfClass = (from asset in _assets
+                                    where asset.Value >= selectedAssetClass.FirstRow && asset.Value < selectedAssetClass.LastRow
+                                    select asset.Value).ToList();
+
+            if (assetRowsOfClass.Any())
+            {
+                var maxAssetRowOfClass = assetRowsOfClass.Max();
+                return maxAssetRowOfClass + 1;
+            }
+            return 0;
         }
 
-        private void CheckForValidIntValue(TextBox textBox)
-        {
-            try
-            {
-                Convert.ToInt32(textBox.Text);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine("Please enter a valid number next time! Exception: " + exception.Message);
-                throw;
-            }
-        }
     }
 }

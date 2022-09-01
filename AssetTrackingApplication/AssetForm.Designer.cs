@@ -35,8 +35,8 @@ namespace AssetTrackingApplication
             this.lbl_firstRow = new System.Windows.Forms.Label();
             this.lbl_name = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.txt_name = new System.Windows.Forms.TextBox();
             this.cb_assetClasses = new System.Windows.Forms.ComboBox();
+            this.txt_name = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -103,13 +103,6 @@ namespace AssetTrackingApplication
             this.panel2.Size = new System.Drawing.Size(175, 232);
             this.panel2.TabIndex = 3;
             // 
-            // txt_name
-            // 
-            this.txt_name.Location = new System.Drawing.Point(7, 31);
-            this.txt_name.Name = "txt_name";
-            this.txt_name.Size = new System.Drawing.Size(165, 22);
-            this.txt_name.TabIndex = 4;
-            // 
             // cb_assetClasses
             // 
             this.cb_assetClasses.FormattingEnabled = true;
@@ -117,6 +110,13 @@ namespace AssetTrackingApplication
             this.cb_assetClasses.Name = "cb_assetClasses";
             this.cb_assetClasses.Size = new System.Drawing.Size(165, 24);
             this.cb_assetClasses.TabIndex = 5;
+            // 
+            // txt_name
+            // 
+            this.txt_name.Location = new System.Drawing.Point(7, 31);
+            this.txt_name.Name = "txt_name";
+            this.txt_name.Size = new System.Drawing.Size(165, 22);
+            this.txt_name.TabIndex = 4;
             // 
             // AssetForm
             // 
