@@ -20,10 +20,12 @@ namespace AssetTrackingApplication
 
         List<AssetClass> _assetClasses;
         Dictionary<string, int> _assets;
+        Dictionary<string, string> _columns;
         public AssetTrackingForm() {
             InitializeComponent();
             _assetClasses = AssetClass.GetAllAssetClasses();
             _assets = AssetClass.GetAssetList();
+            _columns = GetColumnList();
         }
 
         #region insertData_buttonEvents
@@ -35,25 +37,23 @@ namespace AssetTrackingApplication
             
             var assetName = cb_assetName.Text;
             
-            var columns = GetColumnList();
-            var assetRow = GetAssetRow(_assets, assetName);
-            InsertPreviousInsertionValuesToTextboxes(_excel.Worksheet, assetRow, columns);
+            var assetRow = GetAssetRow(assetName);
+            InsertPreviousInsertionValuesToTextboxes(assetRow);
 
         }
 
         private void btn_insertData_Click(object sender, EventArgs e) {
             // deactivate controls
             ToggleInsertionControls(false);
-            var columns = GetColumnList();
             try {
                 // Get parameters for storing asset in _excel (parameters from excel, winforms)
                 var assetName = cb_assetName.Text;
-                var assetRow = GetAssetRow(_assets, assetName);
+                var assetRow = GetAssetRow(assetName);
                 var assetClass = txt_assetClass.Text;
-                var initialAmount = GetInitialAmount(_excel.Worksheet, assetRow, columns);
+                var initialAmount = GetInitialAmount(assetRow);
                 var currentAmount = GetCurrentAmount();
-                var previousSharePrice = GetSharePriceForInsertion(_excel.Worksheet, assetRow, columns);
-                var previousCostBasis = GetPreviousCostBasis(_excel.Worksheet, assetRow, columns);
+                var previousSharePrice = GetSharePriceForInsertion(assetRow);
+                var previousCostBasis = GetPreviousCostBasis(assetRow);
                 var costBasisParameter = GetCostBasisParameter();
                 if (costBasisParameter == null)
                     return;
@@ -61,7 +61,7 @@ namespace AssetTrackingApplication
                 var assetInvestment = new AssetInvestment(assetName, assetClass, initialAmount, currentAmount, costBasisParameter.InsertionPrice, 
                                                           previousCostBasis, costBasisParameter.InvestedCapital, previousSharePrice);
                 // insert values into _excel list
-                assetInvestment.InsertAssetInvestment(assetInvestment, assetRow, _excel.Worksheet, columns, _assets);
+                assetInvestment.InsertAssetInvestment(assetInvestment, assetRow, _excel.Worksheet, _columns, _assets);
                 WriteInsertionDataToTextBox(assetInvestment);
             } finally {
                 ToggleMainControls(true);
@@ -78,28 +78,26 @@ namespace AssetTrackingApplication
             ClearInsertionDataTextBoxes();
 
             var assetName = cb_assetName.Text;
-            var columns = GetColumnList();
-            var assetRow = GetAssetRow(_assets, assetName);
-            InsertPreviousUpdateValuesToTextboxes(_excel.Worksheet, assetRow, columns);
+            var assetRow = GetAssetRow(assetName);
+            InsertPreviousUpdateValuesToTextboxes(assetRow);
         }
         private void btn_updateData_Click(object sender, EventArgs e) {
             ToggleUpdateControls(false);
-            var columns = GetColumnList();
 
             try {
                 // Get parameters for storing asset in _excel (parameters from _excel, winforms)
                 var assetName = cb_assetName.Text;
-                var assetRow = GetAssetRow(_assets, assetName);
+                var assetRow = GetAssetRow(assetName);
                 var assetClass = txt_assetClass.Text;
-                var amount = GetInitialAmount(_excel.Worksheet, assetRow, columns);
-                var investedCapital = GetInvestedCapital(_excel.Worksheet, assetRow, columns);
-                var previousValue = GetPreviousValue(_excel.Worksheet, assetRow, columns);
+                var amount = GetInitialAmount(assetRow);
+                var investedCapital = GetInvestedCapital(assetRow);
+                var previousValue = GetPreviousValue(assetRow);
                 var currentSharePrice = GetCurrentSharePrice();
                 // Create instance of AssetUpdate
                 var assetUpdate = new AssetUpdate(assetName, assetClass, currentSharePrice, amount, previousValue, investedCapital);
                 // insert values into _excel list and winforms
                 WriteUpdateDataToTextBox(assetUpdate);
-                assetUpdate.InsertAssetUpdate(assetUpdate, assetRow, _excel.Worksheet, columns, _assets);
+                assetUpdate.InsertAssetUpdate(assetUpdate, assetRow, _excel.Worksheet, _columns, _assets);
             }
             finally {
                 ToggleMainControls(true);
@@ -165,22 +163,22 @@ namespace AssetTrackingApplication
             txt_investedCapital.Text = "";
         }
 
-        public void InsertPreviousInsertionValuesToTextboxes(Worksheet _worksheet, int assetRow, Dictionary<string, string> columns) {
+        public void InsertPreviousInsertionValuesToTextboxes(int assetRow) {
             
-            var previousAmount = (Range)_worksheet.Cells[assetRow, columns["Amount"]];
+            var previousAmount = (Range)_excel.Worksheet.Cells[assetRow, _columns["Amount"]];
             if (previousAmount.Value != null)
                 txt_previousAmount.Text = previousAmount.Value.ToString();
             else
                 txt_previousAmount.Text = "";
         }
-        public void InsertPreviousUpdateValuesToTextboxes(Worksheet _worksheet, int assetRow, Dictionary<string, string> columns) {
-            var previousValue = (Range)_worksheet.Cells[assetRow, columns["TotalValue"]];
+        public void InsertPreviousUpdateValuesToTextboxes(int assetRow) {
+            var previousValue = (Range)_excel.Worksheet.Cells[assetRow, _columns["TotalValue"]];
             if (previousValue.Value != null)
                 txt_previousPrice.Text = previousValue.Value.ToString();
             else
                 txt_previousSharePrice.Text = "";
 
-            var previousSharePrice = (Range)_worksheet.Cells[assetRow, columns["PricePerShare"]];
+            var previousSharePrice = (Range)_excel.Worksheet.Cells[assetRow, _columns["PricePerShare"]];
             if (previousSharePrice.Value != null)
                 txt_previousSharePrice.Text = previousSharePrice.Value.ToString();
             else
@@ -190,46 +188,46 @@ namespace AssetTrackingApplication
         #endregion updateTextBoxValues
 
         #region retrieveExcelCellValues
-        public decimal GetInitialAmount(Worksheet excel, int assetRow, Dictionary<string, string> columns) {
-            var excelCell = (Range)excel.Cells[assetRow, columns["Amount"]];
+        public decimal GetInitialAmount(int assetRow) {
+            var excelCell = (Range)_excel.Worksheet.Cells[assetRow, _columns["Amount"]];
             if (excelCell.Value != null)
                 return (decimal) excelCell.Value;
             else
                 return 0;
         }
-        public decimal GetInvestedCapital(Worksheet excel, int assetRow, Dictionary<string, string> columns) {
-            var excelCell = (Range)excel.Cells[assetRow, columns["InvestedCapital"]];
+        public decimal GetInvestedCapital(int assetRow) {
+            var excelCell = (Range)_excel.Worksheet.Cells[assetRow, _columns["InvestedCapital"]];
             if (excelCell.Value != null)
                 return (decimal)excelCell.Value;
             else
                 return 0;
         }
-        public decimal GetPreviousValue(Worksheet excel, int assetRow, Dictionary<string, string> columns) {
-            var valueCell = (Range) excel.Cells[assetRow, columns["TotalValue"]];
+        public decimal GetPreviousValue(int assetRow) {
+            var valueCell = (Range)_excel.Worksheet.Cells[assetRow, _columns["TotalValue"]];
             if (valueCell.Value != null)
                 return (decimal) valueCell.Value;
             else
                 return 0;
         }
-        public decimal GetSharePriceForInsertion(Worksheet excel, int assetRow, Dictionary<string, string> columns) {
-            var valueCell = (Range)excel.Cells[assetRow, columns["PricePerShare"]];
+        public decimal GetSharePriceForInsertion(int assetRow) {
+            var valueCell = (Range)_excel.Worksheet.Cells[assetRow, _columns["PricePerShare"]];
             if (valueCell.Value != null)
                 return (decimal) valueCell.Value;
             else
                 return 1;
         }
 
-        public decimal GetPreviousCostBasis(Worksheet excel, int assetRow, Dictionary<string, string> columns) {
-            var valueCell = (Range) excel.Cells[assetRow, columns["CostBasis"]];
+        public decimal GetPreviousCostBasis(int assetRow) {
+            var valueCell = (Range)_excel.Worksheet.Cells[assetRow, _columns["CostBasis"]];
             if (valueCell.Value != null)
                 return (decimal) valueCell.Value;
             else
                 return 0;
         }
 
-        public decimal GetTotalValue(Worksheet excel, Dictionary<string, string> columns)
+        public decimal GetTotalValue()
         {
-            var valueCell = (Range)excel.Cells[150, columns["TotalValue"]];
+            var valueCell = (Range)_excel.Worksheet.Cells[150, _columns["TotalValue"]];
             if (valueCell.Value != null)
                 return (decimal)valueCell.Value;
             else
@@ -298,8 +296,8 @@ namespace AssetTrackingApplication
         #endregion
 
         #region assetCharacteristics
-        public int GetAssetRow(Dictionary<string, int> assetList, string assetName) {
-            if (!assetList.TryGetValue(assetName, out var assetRow)) {
+        public int GetAssetRow(string assetName) {
+            if (!_assets.TryGetValue(assetName, out var assetRow)) {
                 MessageBox.Show("No asset '" + assetName + "' defined - please add it to the dictionary!");
             }
             return assetRow;
@@ -316,7 +314,7 @@ namespace AssetTrackingApplication
 
         private void cb_assetName_TextChanged(object sender, EventArgs e) {
             var assetName = cb_assetName.Text;
-            var assetRow = GetAssetRow(_assets, assetName);
+            var assetRow = GetAssetRow(assetName);
             var assetClass = GetAssetClass(assetRow, assetName);
             txt_assetClass.Text = assetClass;
         }
@@ -324,7 +322,7 @@ namespace AssetTrackingApplication
 
         private void btn_save_Click(object sender, EventArgs e)
         {
-            txt_totalValue.Text = GetTotalValue(_excel.Worksheet, GetColumnList()).ToString();
+            txt_totalValue.Text = GetTotalValue().ToString();
             DeactivateControls();
             btn_save.Enabled = false;
         }

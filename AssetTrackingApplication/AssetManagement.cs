@@ -251,10 +251,10 @@ namespace AssetTrackingApplication
 
         public static bool AssetContentChanged(Dictionary<string, int> assets, List<AssetClass> assetClasses)
         {
-            var assetClassesFromFile = AssetClass.GetAllAssetClasses();
-            var assetClassesContentChanged = AssetClass.AssetClassContentChanged(assetClasses, assetClassesFromFile);
-            var assetsFromFile = AssetClass.GetAssetList();
-            var assetsContentChanged = AssetClass.AssetContentChanged(assets, assetsFromFile);
+            var assetClassesFromFile = GetAllAssetClasses();
+            var assetClassesContentChanged = AssetClassContentChanged(assetClasses, assetClassesFromFile);
+            var assetsFromFile = GetAssetList();
+            var assetsContentChanged = AssetContentChanged(assets, assetsFromFile);
             
             if(assetClassesContentChanged || assetsContentChanged)
             {
