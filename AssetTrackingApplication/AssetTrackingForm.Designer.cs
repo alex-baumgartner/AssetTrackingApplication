@@ -30,8 +30,6 @@
         {
             this.txt_currentSharePrice = new System.Windows.Forms.TextBox();
             this.lbl_capital = new System.Windows.Forms.Label();
-            this.dt_currentDate = new System.Windows.Forms.DateTimePicker();
-            this.lbl_currentDate = new System.Windows.Forms.Label();
             this.lb_assetName = new System.Windows.Forms.Label();
             this.txt_assetClass = new System.Windows.Forms.TextBox();
             this.btn_insertData = new System.Windows.Forms.Button();
@@ -41,6 +39,7 @@
             this.lb_asset_class = new System.Windows.Forms.Label();
             this.txt_currentValue = new System.Windows.Forms.TextBox();
             this.pn_OverallData = new System.Windows.Forms.Panel();
+            this.btn_createAsset = new System.Windows.Forms.Button();
             this.btn_createAssetClass = new System.Windows.Forms.Button();
             this.lbl_totalValue = new System.Windows.Forms.Label();
             this.txt_totalValue = new System.Windows.Forms.TextBox();
@@ -89,27 +88,6 @@
             this.lbl_capital.TabIndex = 1;
             this.lbl_capital.Text = "Previous Value";
             this.lbl_capital.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // dt_currentDate
-            // 
-            this.dt_currentDate.Location = new System.Drawing.Point(216, 107);
-            this.dt_currentDate.Margin = new System.Windows.Forms.Padding(4);
-            this.dt_currentDate.Name = "dt_currentDate";
-            this.dt_currentDate.Size = new System.Drawing.Size(265, 22);
-            this.dt_currentDate.TabIndex = 2;
-            this.dt_currentDate.Visible = false;
-            // 
-            // lbl_currentDate
-            // 
-            this.lbl_currentDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_currentDate.Location = new System.Drawing.Point(227, 133);
-            this.lbl_currentDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lbl_currentDate.Name = "lbl_currentDate";
-            this.lbl_currentDate.Size = new System.Drawing.Size(244, 31);
-            this.lbl_currentDate.TabIndex = 3;
-            this.lbl_currentDate.Text = "Current Date";
-            this.lbl_currentDate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lbl_currentDate.Visible = false;
             // 
             // lb_assetName
             // 
@@ -196,13 +174,12 @@
             // 
             // pn_OverallData
             // 
+            this.pn_OverallData.Controls.Add(this.btn_createAsset);
             this.pn_OverallData.Controls.Add(this.btn_createAssetClass);
             this.pn_OverallData.Controls.Add(this.lbl_totalValue);
             this.pn_OverallData.Controls.Add(this.txt_totalValue);
             this.pn_OverallData.Controls.Add(this.btn_save);
             this.pn_OverallData.Controls.Add(this.lb_assetName);
-            this.pn_OverallData.Controls.Add(this.dt_currentDate);
-            this.pn_OverallData.Controls.Add(this.lbl_currentDate);
             this.pn_OverallData.Controls.Add(this.lb_asset_class);
             this.pn_OverallData.Controls.Add(this.txt_assetClass);
             this.pn_OverallData.Controls.Add(this.cb_assetName);
@@ -212,11 +189,24 @@
             this.pn_OverallData.Size = new System.Drawing.Size(669, 702);
             this.pn_OverallData.TabIndex = 28;
             // 
+            // btn_createAsset
+            // 
+            this.btn_createAsset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btn_createAsset.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_createAsset.Location = new System.Drawing.Point(4, 133);
+            this.btn_createAsset.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_createAsset.Name = "btn_createAsset";
+            this.btn_createAsset.Size = new System.Drawing.Size(293, 61);
+            this.btn_createAsset.TabIndex = 38;
+            this.btn_createAsset.Text = "Create new Asset";
+            this.btn_createAsset.UseVisualStyleBackColor = true;
+            this.btn_createAsset.Click += new System.EventHandler(this.btn_createAsset_Click);
+            // 
             // btn_createAssetClass
             // 
             this.btn_createAssetClass.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btn_createAssetClass.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_createAssetClass.Location = new System.Drawing.Point(371, 185);
+            this.btn_createAssetClass.Location = new System.Drawing.Point(372, 133);
             this.btn_createAssetClass.Margin = new System.Windows.Forms.Padding(4);
             this.btn_createAssetClass.Name = "btn_createAssetClass";
             this.btn_createAssetClass.Size = new System.Drawing.Size(293, 61);
@@ -507,6 +497,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "AssetTrackingForm";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AssetTrackingForm_FormClosing);
             this.pn_OverallData.ResumeLayout(false);
             this.pn_OverallData.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -521,8 +512,6 @@
 
         private System.Windows.Forms.TextBox txt_currentSharePrice;
         private System.Windows.Forms.Label lbl_capital;
-        private System.Windows.Forms.DateTimePicker dt_currentDate;
-        private System.Windows.Forms.Label lbl_currentDate;
         private System.Windows.Forms.Label lb_assetName;
         private System.Windows.Forms.TextBox txt_assetClass;
         private System.Windows.Forms.Button btn_insertData;
@@ -556,6 +545,7 @@
         private System.Windows.Forms.Label lbl_totalValue;
         private System.Windows.Forms.TextBox txt_totalValue;
         private System.Windows.Forms.Button btn_createAssetClass;
+        private System.Windows.Forms.Button btn_createAsset;
     }
 }
 

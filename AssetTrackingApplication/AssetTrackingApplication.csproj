@@ -110,8 +110,13 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="Data\AssetClasses.json" />
+    <None Include="Data\AssetClasses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Data\AssetList.json" />
+    <None Include="Data\AssetTrackingTableNew.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Data\ColumnList.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
