@@ -14,10 +14,7 @@ using Newtonsoft.Json;
 namespace AssetTrackingApplication
 {
     public partial class AssetTrackingForm : Form {
-        // set file name
-        const string _fullName = @"C:\AssetTracking\AssetTrackingTable.xlsx";
-        Excel _excel = new Excel(_fullName);
-
+        Excel _excel; 
         List<AssetClass> _assetClasses;
         Dictionary<string, int> _assets;
         Dictionary<string, string> _columns;
@@ -26,6 +23,7 @@ namespace AssetTrackingApplication
             _assetClasses = AssetClass.GetAllAssetClasses();
             _assets = AssetClass.GetAssetList();
             _columns = GetColumnList();
+            _excel = new Excel(GetFilePathFromUser());
         }
 
         #region insertData_buttonEvents
@@ -134,6 +132,26 @@ namespace AssetTrackingApplication
             var columns = JsonConvert.DeserializeObject<Dictionary<string, string>>(fileContent);
 
             return columns;
+        }
+
+        private string GetFilePathFromUser()
+        {
+            string filePath;
+            using (var openFileDialog = new OpenFileDialog())
+            {
+                var applicationPath = System.Windows.Forms.Application.StartupPath;
+                if (Directory.Exists(applicationPath))
+                {
+                    openFileDialog.InitialDirectory = applicationPath;
+                }
+                else
+                {
+                    openFileDialog.InitialDirectory = @"C:\";
+                }
+                openFileDialog.ShowDialog();
+                filePath = openFileDialog.FileName;
+            }
+            return filePath;
         }
         #endregion File management for excel data
 
