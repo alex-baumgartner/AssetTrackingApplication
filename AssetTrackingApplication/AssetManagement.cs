@@ -217,5 +217,50 @@ namespace AssetTrackingApplication
             var content = JsonConvert.SerializeObject(assetClasses, Formatting.Indented);
             File.WriteAllText("AssetClasses.json", content);
         }
+
+        public static Dictionary<string, int> GetAssetList()
+        {
+            var jsonData = File.ReadAllText("AssetList.json");
+            var assetList = JsonConvert.DeserializeObject<Dictionary<string, int>>(jsonData);
+
+            return assetList;
+        }
+        public static void UpdateAssetFile(Dictionary<string, int> assets)
+        {
+            var content = JsonConvert.SerializeObject(assets, Formatting.Indented);
+            File.WriteAllText("AssetList.json", content);
+        }
+
+        public static bool AssetClassContentChanged(List<AssetClass> assetClasses, List<AssetClass> assetClassesFromFile)
+        {
+            var assetClassesContent = JsonConvert.SerializeObject(assetClasses, Formatting.None);
+            var assetClassesContentFromFile = JsonConvert.SerializeObject(assetClassesFromFile, Formatting.None);
+
+            var contentChanged = !string.Equals(assetClassesContent, assetClassesContentFromFile);
+            return contentChanged;
+        }
+
+        public static bool AssetContentChanged(Dictionary<string, int> assets, Dictionary<string, int> assetsFromFile)
+        {
+            var assetsContent = JsonConvert.SerializeObject(assets, Formatting.None);
+            var assetsContentFromFile = JsonConvert.SerializeObject(assetsFromFile, Formatting.None);
+            
+            var contentChanged = !string.Equals(assetsContent, assetsContentFromFile);
+            return contentChanged;
+        }
+
+        public static bool AssetContentChanged(Dictionary<string, int> assets, List<AssetClass> assetClasses)
+        {
+            var assetClassesFromFile = AssetClass.GetAllAssetClasses();
+            var assetClassesContentChanged = AssetClass.AssetClassContentChanged(assetClasses, assetClassesFromFile);
+            var assetsFromFile = AssetClass.GetAssetList();
+            var assetsContentChanged = AssetClass.AssetContentChanged(assets, assetsFromFile);
+            
+            if(assetClassesContentChanged || assetsContentChanged)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

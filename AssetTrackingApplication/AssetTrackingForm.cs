@@ -17,8 +17,13 @@ namespace AssetTrackingApplication
         // set file name
         const string _fullName = @"C:\AssetTracking\AssetTrackingTable.xlsx";
         Excel _excel = new Excel(_fullName);
+
+        List<AssetClass> _assetClasses;
+        Dictionary<string, int> _assets;
         public AssetTrackingForm() {
             InitializeComponent();
+            _assetClasses = AssetClass.GetAllAssetClasses();
+            _assets = AssetClass.GetAssetList();
         }
 
         #region insertData_buttonEvents
@@ -29,9 +34,9 @@ namespace AssetTrackingApplication
             ClearUpdateDataTextBoxes();
             
             var assetName = cb_assetName.Text;
-            var assetList = GetAssetList();
+            
             var columns = GetColumnList();
-            var assetRow = GetAssetRow(assetList, assetName);
+            var assetRow = GetAssetRow(_assets, assetName);
             InsertPreviousInsertionValuesToTextboxes(_excel.Worksheet, assetRow, columns);
 
         }
@@ -39,12 +44,11 @@ namespace AssetTrackingApplication
         private void btn_insertData_Click(object sender, EventArgs e) {
             // deactivate controls
             ToggleInsertionControls(false);
-            var assetList = GetAssetList();
             var columns = GetColumnList();
             try {
                 // Get parameters for storing asset in _excel (parameters from excel, winforms)
                 var assetName = cb_assetName.Text;
-                var assetRow = GetAssetRow(assetList, assetName);
+                var assetRow = GetAssetRow(_assets, assetName);
                 var assetClass = txt_assetClass.Text;
                 var initialAmount = GetInitialAmount(_excel.Worksheet, assetRow, columns);
                 var currentAmount = GetCurrentAmount();
@@ -57,7 +61,7 @@ namespace AssetTrackingApplication
                 var assetInvestment = new AssetInvestment(assetName, assetClass, initialAmount, currentAmount, costBasisParameter.InsertionPrice, 
                                                           previousCostBasis, costBasisParameter.InvestedCapital, previousSharePrice);
                 // insert values into _excel list
-                assetInvestment.InsertAssetInvestment(assetInvestment, assetRow, _excel.Worksheet, columns, assetList);
+                assetInvestment.InsertAssetInvestment(assetInvestment, assetRow, _excel.Worksheet, columns, _assets);
                 WriteInsertionDataToTextBox(assetInvestment);
             } finally {
                 ToggleMainControls(true);
@@ -74,20 +78,18 @@ namespace AssetTrackingApplication
             ClearInsertionDataTextBoxes();
 
             var assetName = cb_assetName.Text;
-            var assetList = GetAssetList();
             var columns = GetColumnList();
-            var assetRow = GetAssetRow(assetList, assetName);
+            var assetRow = GetAssetRow(_assets, assetName);
             InsertPreviousUpdateValuesToTextboxes(_excel.Worksheet, assetRow, columns);
         }
         private void btn_updateData_Click(object sender, EventArgs e) {
             ToggleUpdateControls(false);
-            var assetList = GetAssetList();
             var columns = GetColumnList();
 
             try {
                 // Get parameters for storing asset in _excel (parameters from _excel, winforms)
                 var assetName = cb_assetName.Text;
-                var assetRow = GetAssetRow(assetList, assetName);
+                var assetRow = GetAssetRow(_assets, assetName);
                 var assetClass = txt_assetClass.Text;
                 var amount = GetInitialAmount(_excel.Worksheet, assetRow, columns);
                 var investedCapital = GetInvestedCapital(_excel.Worksheet, assetRow, columns);
@@ -97,7 +99,7 @@ namespace AssetTrackingApplication
                 var assetUpdate = new AssetUpdate(assetName, assetClass, currentSharePrice, amount, previousValue, investedCapital);
                 // insert values into _excel list and winforms
                 WriteUpdateDataToTextBox(assetUpdate);
-                assetUpdate.InsertAssetUpdate(assetUpdate, assetRow, _excel.Worksheet, columns, assetList);
+                assetUpdate.InsertAssetUpdate(assetUpdate, assetRow, _excel.Worksheet, columns, _assets);
             }
             finally {
                 ToggleMainControls(true);
@@ -128,14 +130,6 @@ namespace AssetTrackingApplication
         #endregion toggleControls
 
         #region File management for excel data
-        // AssetList - insert new Assets here:
-        public Dictionary<string, int> GetAssetList() {
-            var fileContent = File.ReadAllText("AssetList.json");
-            var assetList = JsonConvert.DeserializeObject<Dictionary<string, int>>(fileContent);
-
-            return assetList;
-        }
-
         public Dictionary<string, string> GetColumnList() {
             var fileContent = File.ReadAllText("ColumnList.json");
 
@@ -317,14 +311,12 @@ namespace AssetTrackingApplication
             return assetClass.Name;
         }
         private void cb_assetName_MouseClick(object sender, MouseEventArgs e) {
-            var assetList = GetAssetList();
-            cb_assetName.DataSource = assetList.Keys.ToList();
+            cb_assetName.DataSource = _assets.Keys.ToList();
         }
 
         private void cb_assetName_TextChanged(object sender, EventArgs e) {
-            var assetList = GetAssetList();
             var assetName = cb_assetName.Text;
-            var assetRow = GetAssetRow(assetList, assetName);
+            var assetRow = GetAssetRow(_assets, assetName);
             var assetClass = GetAssetClass(assetRow, assetName);
             txt_assetClass.Text = assetClass;
         }
@@ -334,7 +326,6 @@ namespace AssetTrackingApplication
         {
             txt_totalValue.Text = GetTotalValue(_excel.Worksheet, GetColumnList()).ToString();
             DeactivateControls();
-            _excel.CloseExcelFile();
             btn_save.Enabled = false;
         }
 
@@ -342,6 +333,31 @@ namespace AssetTrackingApplication
         {
             var assetClassForm = new AssetClassForm(AssetClass.GetAllAssetClasses());
             assetClassForm.ShowDialog();
+        }
+
+        private void btn_createAsset_Click(object sender, EventArgs e)
+        {
+            var assetForm = new AssetForm(AssetClass.GetAllAssetClasses(), _assets);
+            assetForm.ShowDialog();
+        }
+
+        private void AssetTrackingForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (AssetClass.AssetContentChanged(_assets, _assetClasses))
+            {
+                var saveChanges = MessageBox.Show("Do you want to save changed to assets and asset classes?", "Changes detected!", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+
+                if (saveChanges == DialogResult.Yes)
+                {
+                    AssetClass.UpdateAssetClassFile(_assetClasses);
+                    AssetClass.UpdateAssetFile(_assets);
+                }
+            }
+
+            if (_excel != null)
+            {
+                _excel.CloseExcelFile();
+            }
         }
     }
 }
