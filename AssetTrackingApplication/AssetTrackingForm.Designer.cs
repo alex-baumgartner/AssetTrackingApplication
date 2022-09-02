@@ -43,7 +43,7 @@
             this.btn_createAssetClass = new System.Windows.Forms.Button();
             this.lbl_totalValue = new System.Windows.Forms.Label();
             this.txt_totalValue = new System.Windows.Forms.TextBox();
-            this.btn_save = new System.Windows.Forms.Button();
+            this.btn_finish = new System.Windows.Forms.Button();
             this.btn_InitializeAssetInsertion = new System.Windows.Forms.Button();
             this.btn_InitializeUpdate = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -178,7 +178,7 @@
             this.pn_OverallData.Controls.Add(this.btn_createAssetClass);
             this.pn_OverallData.Controls.Add(this.lbl_totalValue);
             this.pn_OverallData.Controls.Add(this.txt_totalValue);
-            this.pn_OverallData.Controls.Add(this.btn_save);
+            this.pn_OverallData.Controls.Add(this.btn_finish);
             this.pn_OverallData.Controls.Add(this.lb_assetName);
             this.pn_OverallData.Controls.Add(this.lb_asset_class);
             this.pn_OverallData.Controls.Add(this.txt_assetClass);
@@ -236,18 +236,18 @@
             this.txt_totalValue.Size = new System.Drawing.Size(239, 22);
             this.txt_totalValue.TabIndex = 35;
             // 
-            // btn_save
+            // btn_finish
             // 
-            this.btn_save.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_save.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_save.Location = new System.Drawing.Point(4, 590);
-            this.btn_save.Margin = new System.Windows.Forms.Padding(4);
-            this.btn_save.Name = "btn_save";
-            this.btn_save.Size = new System.Drawing.Size(661, 107);
-            this.btn_save.TabIndex = 28;
-            this.btn_save.Text = "Save";
-            this.btn_save.UseVisualStyleBackColor = true;
-            this.btn_save.Click += new System.EventHandler(this.btn_save_Click);
+            this.btn_finish.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_finish.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_finish.Location = new System.Drawing.Point(4, 590);
+            this.btn_finish.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_finish.Name = "btn_finish";
+            this.btn_finish.Size = new System.Drawing.Size(661, 107);
+            this.btn_finish.TabIndex = 28;
+            this.btn_finish.Text = "Finish";
+            this.btn_finish.UseVisualStyleBackColor = true;
+            this.btn_finish.Click += new System.EventHandler(this.btn_finish_Click);
             // 
             // btn_InitializeAssetInsertion
             // 
@@ -529,7 +529,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txt_currentAmount;
         private System.Windows.Forms.Button btn_updateData;
-        private System.Windows.Forms.Button btn_save;
+        private System.Windows.Forms.Button btn_finish;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txt_priceGain;
         private System.Windows.Forms.TextBox txt_previousAmount;

@@ -302,16 +302,12 @@ namespace AssetTrackingApplication
 
         #endregion retrieveWinFormsValues
 
-        #region excelFileManagement
-
         public void DeactivateControls() {
             ToggleMainControls(false);
             ToggleInsertionControls(false);
             ToggleUpdateControls(false);
 
         }
-       
-        #endregion
 
         #region assetCharacteristics
         public int GetAssetRow(string assetName) {
@@ -338,11 +334,11 @@ namespace AssetTrackingApplication
         }
         #endregion assetCharacteristics
 
-        private void btn_save_Click(object sender, EventArgs e)
+        private void btn_finish_Click(object sender, EventArgs e)
         {
             txt_totalValue.Text = GetTotalValue().ToString();
             DeactivateControls();
-            btn_save.Enabled = false;
+            btn_finish.Enabled = false;
         }
 
         private void btn_createAssetClass_Click(object sender, EventArgs e)

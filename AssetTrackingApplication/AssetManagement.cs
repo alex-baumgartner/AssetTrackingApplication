@@ -33,10 +33,23 @@ namespace AssetTrackingApplication
         public decimal InvestedCapital { get; set; }
         public decimal Performance => InvestedCapital != 0 ? (TotalValue - InvestedCapital) / InvestedCapital :0;
 
+        public void InsertAssetUpdate(AssetUpdate assetUpdate, int assetRow, Worksheet excel, Dictionary<string, string> columns, Dictionary<string, int> assets)
+        {
+            InsertAssetName(assetUpdate, columns["Name"], assetRow, excel);
+            InsertAssetClass(assetUpdate, columns["AssetClass"], assetRow, excel);
+            InsertPricePerShare(assetUpdate, columns["PricePerShare"], assetRow, excel);
+            InsertTotalValue(assetUpdate, columns["TotalValue"], assetRow, excel);
+            InsertPreviousValue(assetUpdate, columns["PreviousValue"], assetRow, excel);
+            InsertGainTotal(assetUpdate, columns["GainTotal"], assetRow, excel);
+            InsertGainRelative(assetUpdate, columns["GainRelative"], assetRow, excel);
+            InsertPerformance(assetUpdate, columns["Performance"], assetRow, excel);
+            InsertAssetShare(excel, columns, assets);
+        }
 
         private void InsertPricePerShare(AssetUpdate assetUpdate, string assetColumn, int assetRow, Worksheet excel) {
             excel.Cells[assetRow, assetColumn] = assetUpdate.PricePerShare;
         }
+
         private void InsertTotalValue(AssetUpdate assetUpdate, string assetColumn, int assetRow, Worksheet excel) {
             excel.Cells[assetRow, assetColumn] = assetUpdate.TotalValue;
         }
@@ -56,14 +69,15 @@ namespace AssetTrackingApplication
         private void InsertPerformance(AssetUpdate assetUpdate, string assetColumn, int assetRow, Worksheet excel) {
             excel.Cells[assetRow, assetColumn] = assetUpdate.Performance;
         }
-        public void InsertAssetUpdate(AssetUpdate assetUpdate, int assetRow, Worksheet excel, Dictionary<string, string> columns, Dictionary<string, int> assets) {
-            InsertPricePerShare(assetUpdate, columns["PricePerShare"], assetRow, excel);
-            InsertTotalValue(assetUpdate, columns["TotalValue"], assetRow, excel);
-            InsertPreviousValue(assetUpdate, columns["PreviousValue"], assetRow, excel);
-            InsertGainTotal(assetUpdate, columns["GainTotal"], assetRow, excel);
-            InsertGainRelative(assetUpdate, columns["GainRelative"], assetRow, excel);
-            InsertPerformance(assetUpdate, columns["Performance"], assetRow, excel);
-            InsertAssetShare(excel, columns, assets);
+
+        private void InsertAssetClass(AssetUpdate assetUpdate, string assetColumn, int assetRow, Worksheet excel)
+        {
+            excel.Cells[assetRow, assetColumn] = assetUpdate.AssetClass;
+        }
+
+        private void InsertAssetName(AssetUpdate assetUpdate, string assetColumn, int assetRow, Worksheet excel)
+        {
+            excel.Cells[assetRow, assetColumn] = assetUpdate.Name;
         }
 
         public void InsertAssetShare(Worksheet excel, Dictionary<string, string> columns, Dictionary<string, int> assets) {
@@ -128,20 +142,23 @@ namespace AssetTrackingApplication
         public decimal InvestedCapital { get; set; }
         public decimal Performance => CurrentAmount != 0 ? (TotalValue - InvestedCapital) / InvestedCapital : 0;
 
+        public void InsertAssetInvestment(AssetInvestment assetInvestment, int assetRow, Worksheet excel, Dictionary<string, string> columns, Dictionary<string, int> assets)
+        {
+            InsertInitialAmount(assetInvestment, columns["InitialAmount"], assetRow, excel);
+            InsertCurrentAmount(assetInvestment, columns["Amount"], assetRow, excel);
+            InsertRelativeContribution(assetInvestment, columns["RelativeContribution"], assetRow, excel);
+            InsertCostBasis(assetInvestment, columns["CostBasis"], assetRow, excel);
+            InsertInvestedCapital(assetInvestment, columns["InvestedCapital"], assetRow, excel);
+            var assetUpdate = new AssetUpdate(this.Name, this.AssetClass, this.InsertionPrice, this.CurrentAmount, this.PreviousSharePrice, this.InvestedCapital);
+            assetUpdate.InsertAssetUpdate(assetUpdate, assetRow, excel, columns, assets);
+        }
+
         private void InsertInitialAmount(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel) {
             excel.Cells[assetRow, assetColumn] = assetInvestment.InitialAmount;
         }
 
         private void InsertCurrentAmount(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel) {
             excel.Cells[assetRow, assetColumn] = assetInvestment.CurrentAmount;
-        }
-
-        private void InsertTotalValue(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel) {
-            excel.Cells[assetRow, assetColumn] = assetInvestment.TotalValue;
-        }
-
-        private void InsertSharePrice(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel) {
-            excel.Cells[assetRow, assetColumn] = assetInvestment.InsertionPrice != 0 ? assetInvestment.InsertionPrice : assetInvestment.PreviousSharePrice;
         }
 
         private void InsertCostBasis(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel) {
@@ -152,9 +169,6 @@ namespace AssetTrackingApplication
             excel.Cells[assetRow, assetColumn] = assetInvestment.InvestedCapital;
         }
 
-        private void InsertPerformance(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel) {
-            excel.Cells[assetRow, assetColumn] = assetInvestment.Performance;
-        }
         private void InsertRelativeContribution(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel) {
             var initialAmount = assetInvestment.InitialAmount;
             if (initialAmount == 0)
@@ -162,18 +176,6 @@ namespace AssetTrackingApplication
             else
                 excel.Cells[assetRow, assetColumn] = assetInvestment.CurrentAmount / assetInvestment.InitialAmount - 1;
 
-        }
-
-        public void InsertAssetInvestment(AssetInvestment assetInvestment, int assetRow, Worksheet excel, Dictionary<string, string> columns, Dictionary<string, int> assets) {
-            InsertInitialAmount(assetInvestment, columns["InitialAmount"], assetRow, excel);
-            InsertCurrentAmount(assetInvestment, columns["Amount"], assetRow, excel);
-            InsertRelativeContribution(assetInvestment, columns["RelativeContribution"], assetRow, excel);
-            InsertTotalValue(assetInvestment, columns["TotalValue"], assetRow, excel);
-            InsertCostBasis(assetInvestment, columns["CostBasis"], assetRow, excel);
-            InsertSharePrice(assetInvestment, columns["PricePerShare"], assetRow, excel);
-            InsertInvestedCapital(assetInvestment, columns["InvestedCapital"], assetRow, excel);
-            InsertPerformance(assetInvestment, columns["Performance"], assetRow, excel);
-            InsertAssetShare(excel, columns, assets);
         }
 
         public void InsertAssetShare(Worksheet excel, Dictionary<string, string> columns, Dictionary<string, int> assets) {
