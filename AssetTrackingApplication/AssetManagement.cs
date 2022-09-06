@@ -68,6 +68,11 @@ namespace AssetTrackingApplication
         }
 
         private void InsertPerformance(AssetUpdate assetUpdate, string assetColumn, int assetRow, Worksheet excel) {
+            if(assetUpdate.AssetClass == "Bank Accounts")
+            {
+                return;
+            }
+
             excel.Cells[assetRow, assetColumn] = assetUpdate.Performance;
         }
 
@@ -152,6 +157,16 @@ namespace AssetTrackingApplication
         public decimal InvestedCapital { get; set; }
         public decimal Performance => CurrentAmount != 0 ? (TotalValue - InvestedCapital) / InvestedCapital : 0;
 
+
+        private void InsertAssetClass(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel)
+        {
+            excel.Cells[assetRow, assetColumn] = assetInvestment.AssetClass;
+        }
+
+        private void InsertAssetName(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel)
+        {
+            excel.Cells[assetRow, assetColumn] = assetInvestment.Name;
+        }
         private void InsertInitialAmount(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel)
         {
             excel.Cells[assetRow, assetColumn] = assetInvestment.InitialAmount;
@@ -174,6 +189,11 @@ namespace AssetTrackingApplication
 
         private void InsertCostBasis(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel)
         {
+            if(assetInvestment.AssetClass == "Bank Accounts")
+            {
+                return;
+            }
+
             excel.Cells[assetRow, assetColumn] = assetInvestment.CostBasis;
         }
 
@@ -184,6 +204,11 @@ namespace AssetTrackingApplication
 
         private void InsertPerformance(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel)
         {
+            if(assetInvestment.AssetClass == "Bank Accounts")
+            {
+                return;
+            }
+
             excel.Cells[assetRow, assetColumn] = assetInvestment.Performance;
         }
         private void InsertRelativeContribution(AssetInvestment assetInvestment, string assetColumn, int assetRow, Worksheet excel)
@@ -198,6 +223,8 @@ namespace AssetTrackingApplication
 
         public void InsertAssetInvestment(AssetInvestment assetInvestment, int assetRow, Worksheet excel, Dictionary<string, string> columns, Dictionary<string, int> assets)
         {
+            InsertAssetName(assetInvestment, columns["Name"], assetRow, excel);
+            InsertAssetClass(assetInvestment, columns["AssetClass"], assetRow, excel);
             InsertInitialAmount(assetInvestment, columns["InitialAmount"], assetRow, excel);
             InsertCurrentAmount(assetInvestment, columns["Amount"], assetRow, excel);
             InsertRelativeContribution(assetInvestment, columns["RelativeContribution"], assetRow, excel);

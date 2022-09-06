@@ -22,8 +22,9 @@ namespace AssetTrackingApplication
             var assetClassNames = _assetClasses.Select(a => a.Name).ToList();
             cb_assetClasses.DataSource = assetClassNames;
         }
+        public Dictionary<string, int> Assets { get; set; }
 
-        
+
         private void btn_cancel_Click(object sender, EventArgs e)
         {
             Close();
@@ -41,6 +42,8 @@ namespace AssetTrackingApplication
             if (assetRow != 0)
             {
                 _assets.Add(txt_name.Text, assetRow);
+                _assets = _assets.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                Assets = _assets;
                 Close();
             }
             else

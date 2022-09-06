@@ -354,6 +354,10 @@ namespace AssetTrackingApplication
         {
             var assetForm = new AssetForm(AssetClass.GetAllAssetClasses(_directoryPath), _assets);
             assetForm.ShowDialog();
+            if (assetForm.Assets != null)
+            {
+                _assets = assetForm.Assets;
+            }
         }
 
         private void AssetTrackingForm_FormClosing(object sender, FormClosingEventArgs e)
