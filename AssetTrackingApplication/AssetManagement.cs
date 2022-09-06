@@ -92,7 +92,7 @@ namespace AssetTrackingApplication
                     assetValue = (decimal)assetValueCell.Value;
                     var totalValueCell = (Range)excel.Cells[lastRow, columns["TotalValue"]];
                     var totalValue = (decimal)totalValueCell.Value;
-                    excel.Cells[assetRow, columns["AssetShare"]] = assetValue / totalValue != 0 ? totalValue : assetValue;
+                    excel.Cells[assetRow, columns["AssetShare"]] = assetValue / (totalValue != 0 ? totalValue : assetValue);
                 }
             }
         }
@@ -216,15 +216,13 @@ namespace AssetTrackingApplication
             {
                 var assetValueCell = (Range)excel.Cells[assetRow, columns["TotalValue"]];
                 decimal assetValue;
-                if (assetValueCell.Value != null)
+                if (assetValueCell.Value != null && assetValueCell.Value != 0)
+                {
                     assetValue = (decimal)assetValueCell.Value;
-                else
-                    assetValue = 0;
-
-                var totalValueCell = (Range)excel.Cells[lastRow, columns["TotalValue"]];
-                var totalValue = (decimal)totalValueCell.Value;
-
-                excel.Cells[assetRow, columns["AssetShare"]] = assetValue / totalValue;
+                    var totalValueCell = (Range)excel.Cells[lastRow, columns["TotalValue"]];
+                    var totalValue = (decimal)totalValueCell.Value;
+                    excel.Cells[assetRow, columns["AssetShare"]] = assetValue / (totalValue != 0 ? totalValue : assetValue);
+                }
             }
         }
     }
