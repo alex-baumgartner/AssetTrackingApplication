@@ -54,8 +54,6 @@ namespace AssetTrackingApplication
                 int lastRow = firstRow + Convert.ToInt32(txt_classItemAmount.Text);
                 var assetClass = new AssetClass(txt_name.Text, firstRow, lastRow);
                 _assetClasses.Add(assetClass);
-
-                AssetClass.UpdateAssetClassFile(_assetClasses);
                 Close();
             }
             else

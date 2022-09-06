@@ -33,7 +33,6 @@
             this.lb_assetName = new System.Windows.Forms.Label();
             this.txt_assetClass = new System.Windows.Forms.TextBox();
             this.btn_insertData = new System.Windows.Forms.Button();
-            this.lb_filePath = new System.Windows.Forms.Label();
             this.txt_previousPrice = new System.Windows.Forms.TextBox();
             this.cb_assetName = new System.Windows.Forms.ComboBox();
             this.lb_asset_class = new System.Windows.Forms.Label();
@@ -64,6 +63,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.txt_currentAmount = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.lb_sharePrice = new System.Windows.Forms.Label();
             this.pn_OverallData.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -120,17 +120,6 @@
             this.btn_insertData.Text = "Insert Asset";
             this.btn_insertData.UseVisualStyleBackColor = true;
             this.btn_insertData.Click += new System.EventHandler(this.btn_insertData_Click);
-            // 
-            // lb_filePath
-            // 
-            this.lb_filePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_filePath.Location = new System.Drawing.Point(15, 34);
-            this.lb_filePath.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lb_filePath.Name = "lb_filePath";
-            this.lb_filePath.Size = new System.Drawing.Size(328, 31);
-            this.lb_filePath.TabIndex = 23;
-            this.lb_filePath.Text = "Current Price Per Share";
-            this.lb_filePath.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // txt_previousPrice
             // 
@@ -287,7 +276,7 @@
             this.panel1.Controls.Add(this.btn_updateData);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.btn_InitializeUpdate);
-            this.panel1.Controls.Add(this.lb_filePath);
+            this.panel1.Controls.Add(this.lb_sharePrice);
             this.panel1.Controls.Add(this.txt_currentSharePrice);
             this.panel1.Controls.Add(this.lbl_capital);
             this.panel1.Controls.Add(this.txt_previousPrice);
@@ -486,6 +475,17 @@
             this.label2.Text = "Current Amount";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // lb_sharePrice
+            // 
+            this.lb_sharePrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lb_sharePrice.Location = new System.Drawing.Point(15, 34);
+            this.lb_sharePrice.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lb_sharePrice.Name = "lb_sharePrice";
+            this.lb_sharePrice.Size = new System.Drawing.Size(328, 31);
+            this.lb_sharePrice.TabIndex = 23;
+            this.lb_sharePrice.Text = "Current Price Per Share";
+            this.lb_sharePrice.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // AssetTrackingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -515,7 +515,6 @@
         private System.Windows.Forms.Label lb_assetName;
         private System.Windows.Forms.TextBox txt_assetClass;
         private System.Windows.Forms.Button btn_insertData;
-        private System.Windows.Forms.Label lb_filePath;
         private System.Windows.Forms.TextBox txt_previousPrice;
         private System.Windows.Forms.ComboBox cb_assetName;
         private System.Windows.Forms.Label lb_asset_class;
@@ -546,6 +545,7 @@
         private System.Windows.Forms.TextBox txt_totalValue;
         private System.Windows.Forms.Button btn_createAssetClass;
         private System.Windows.Forms.Button btn_createAsset;
+        private System.Windows.Forms.Label lb_sharePrice;
     }
 }
 

@@ -18,12 +18,15 @@ namespace AssetTrackingApplication
         List<AssetClass> _assetClasses;
         Dictionary<string, int> _assets;
         Dictionary<string, string> _columns;
+        string _directoryPath;
         public AssetTrackingForm() {
             InitializeComponent();
-            _assetClasses = AssetClass.GetAllAssetClasses();
-            _assets = AssetClass.GetAssetList();
-            _columns = GetColumnList();
-            _excel = new Excel(GetFilePathFromUser());
+            var excelFileName = GetFilePathFromUser();
+            _excel = new Excel(excelFileName);
+            _directoryPath = Path.GetDirectoryName(excelFileName);
+            _assetClasses = AssetClass.GetAllAssetClasses(_directoryPath);
+            _assets = AssetClass.GetAssetList(_directoryPath);
+            _columns = GetColumnList(_directoryPath);
         }
 
         #region insertData_buttonEvents
@@ -126,8 +129,8 @@ namespace AssetTrackingApplication
         #endregion toggleControls
 
         #region File management for excel data
-        public Dictionary<string, string> GetColumnList() {
-            var fileContent = File.ReadAllText("ColumnList.json");
+        public Dictionary<string, string> GetColumnList(string path) {
+            var fileContent = File.ReadAllText(path + "/ColumnList.json");
 
             var columns = JsonConvert.DeserializeObject<Dictionary<string, string>>(fileContent);
 
@@ -317,7 +320,7 @@ namespace AssetTrackingApplication
             return assetRow;
         }
         public string GetAssetClass(int assetRow, string assetName) {
-            var assetClasses = AssetClass.GetAllAssetClasses();
+            var assetClasses = AssetClass.GetAllAssetClasses(_directoryPath);
             var assetClass = assetClasses.Find(a => (a.FirstRow <= assetRow) && (a.LastRow >= assetRow)); 
             
             return assetClass.Name;
@@ -343,26 +346,26 @@ namespace AssetTrackingApplication
 
         private void btn_createAssetClass_Click(object sender, EventArgs e)
         {
-            var assetClassForm = new AssetClassForm(AssetClass.GetAllAssetClasses());
+            var assetClassForm = new AssetClassForm(AssetClass.GetAllAssetClasses(_directoryPath));
             assetClassForm.ShowDialog();
         }
 
         private void btn_createAsset_Click(object sender, EventArgs e)
         {
-            var assetForm = new AssetForm(AssetClass.GetAllAssetClasses(), _assets);
+            var assetForm = new AssetForm(AssetClass.GetAllAssetClasses(_directoryPath), _assets);
             assetForm.ShowDialog();
         }
 
         private void AssetTrackingForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (AssetClass.AssetContentChanged(_assets, _assetClasses))
+            if (AssetClass.AssetContentChanged(_assets, _assetClasses, _directoryPath))
             {
                 var saveChanges = MessageBox.Show("Do you want to save changed to assets and asset classes?", "Changes detected!", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
                 if (saveChanges == DialogResult.Yes)
                 {
-                    AssetClass.UpdateAssetClassFile(_assetClasses);
-                    AssetClass.UpdateAssetFile(_assets);
+                    AssetClass.UpdateAssetClassFile(_assetClasses, _directoryPath);
+                    AssetClass.UpdateAssetFile(_assets, _directoryPath);
                 }
             }
 
