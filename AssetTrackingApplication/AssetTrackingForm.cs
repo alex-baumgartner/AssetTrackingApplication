@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 
 namespace AssetTrackingApplication
@@ -21,14 +22,37 @@ namespace AssetTrackingApplication
         string _directoryPath;
         public AssetTrackingForm() {
             InitializeComponent();
-            var excelFileName = GetFilePathFromUser();
+            var excelFileName = GetExcelFilePathFromUser();
+            _directoryPath = GetDirectoryPathFromUser();
             _excel = new Excel(excelFileName);
-            _directoryPath = Path.GetDirectoryName(excelFileName);
             _assetClasses = AssetClass.GetAllAssetClasses(_directoryPath);
             _assets = AssetClass.GetAssetList(_directoryPath);
             _columns = GetColumnList(_directoryPath);
         }
 
+        private string GetDirectoryPathFromUser()
+        {
+            var applicationPath = System.Windows.Forms.Application.StartupPath;
+
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.Title = "Choose data folder";
+            dialog.InitialDirectory = applicationPath;
+            dialog.IsFolderPicker = true;
+            try
+            {
+                dialog.ShowDialog();
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                MessageBox.Show("Could not find folder:  " + dialog.FileName + ",  " + ex.Message, null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error occurred when choosing data folder, " + ex.Message, null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return dialog.FileName;
+        }
         #region insertData_buttonEvents
         private void btn_InitializeAssetInsertion_Click(object sender, EventArgs e) {
             ToggleInsertionControls(true);
@@ -137,11 +161,12 @@ namespace AssetTrackingApplication
             return columns;
         }
 
-        private string GetFilePathFromUser()
+        private string GetExcelFilePathFromUser()
         {
             string filePath;
             using (var openFileDialog = new OpenFileDialog())
             {
+                openFileDialog.Title = "Choose Excel file";
                 var applicationPath = System.Windows.Forms.Application.StartupPath;
                 if (Directory.Exists(applicationPath))
                 {
@@ -346,13 +371,13 @@ namespace AssetTrackingApplication
 
         private void btn_createAssetClass_Click(object sender, EventArgs e)
         {
-            var assetClassForm = new AssetClassForm(AssetClass.GetAllAssetClasses(_directoryPath));
+            var assetClassForm = new AssetClassForm(_assetClasses);
             assetClassForm.ShowDialog();
         }
 
         private void btn_createAsset_Click(object sender, EventArgs e)
         {
-            var assetForm = new AssetForm(AssetClass.GetAllAssetClasses(_directoryPath), _assets);
+            var assetForm = new AssetForm(_assetClasses, _assets);
             assetForm.ShowDialog();
             if (assetForm.Assets != null)
             {

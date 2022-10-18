@@ -55,6 +55,11 @@ namespace AssetTrackingApplication
         {
             var selectedAssetClass = _assetClasses.SingleOrDefault(a => a.Name == cb_assetClasses.Text);
 
+            if (selectedAssetClass == null)
+            {
+                return 0;
+            }
+
             var assetRowsOfClass = (from asset in _assets
                                     where asset.Value >= selectedAssetClass.FirstRow && asset.Value < selectedAssetClass.LastRow
                                     select asset.Value).ToList();
@@ -64,7 +69,7 @@ namespace AssetTrackingApplication
                 var maxAssetRowOfClass = assetRowsOfClass.Max();
                 return maxAssetRowOfClass + 1;
             }
-            return 0;
+            return selectedAssetClass.FirstRow;
         }
 
     }
