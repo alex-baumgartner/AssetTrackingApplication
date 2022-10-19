@@ -34,10 +34,13 @@ namespace AssetTrackingApplication
         {
             var applicationPath = System.Windows.Forms.Application.StartupPath;
 
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.Title = "Choose data folder";
-            dialog.InitialDirectory = applicationPath;
-            dialog.IsFolderPicker = true;
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog
+            {
+                Title = "Choose data folder",
+                InitialDirectory = applicationPath,
+                IsFolderPicker = true
+            };
+
             try
             {
                 dialog.ShowDialog();

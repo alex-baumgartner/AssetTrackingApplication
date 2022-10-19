@@ -30,7 +30,23 @@ namespace AssetTrackingApplication
         public decimal TotalValue => (PricePerShare != 0 ? PricePerShare : TotalValue) * Amount;
         public decimal PreviousValue { get; set; }
         public decimal GainTotal => TotalValue - PreviousValue;
-        public decimal GainRelative => PreviousValue != 0 ? ((TotalValue / PreviousValue) - 1) : TotalValue == 0 ? 0 : 1;
+        public decimal GainRelative
+        {
+            get
+            {
+                if (PreviousValue != 0)
+                {
+                    return TotalValue / PreviousValue - 1;
+                }
+                
+                if (TotalValue != 0)
+                {
+                    return 1;
+                }
+                return 0;
+            }
+        }
+
         public decimal InvestedCapital { get; set; }
         public decimal Performance => InvestedCapital != 0 ? (TotalValue - InvestedCapital) / InvestedCapital :0;
 
@@ -136,14 +152,23 @@ namespace AssetTrackingApplication
             CurrentAmount = currentAmount;
             PreviousSharePrice = previousSharePrice;
             InsertionPrice = insertionPrice != 0 ? insertionPrice : 0;
-            if (currentAmount - initialAmount >= 0)
+
+            if(investedCapital == 0)
             {
-                InvestedCapital = investedCapital != 0 ? investedCapital : previousCostBasis * initialAmount + insertionPrice * (currentAmount - initialAmount);
+                if (currentAmount - initialAmount >= 0)
+                {
+                    InvestedCapital = previousCostBasis * initialAmount + insertionPrice * (currentAmount - initialAmount);
+                }
+                else
+                {
+                    InvestedCapital = previousCostBasis * initialAmount + previousCostBasis * (currentAmount - initialAmount);
+                }
             }
             else
             {
-                InvestedCapital = investedCapital != 0 ? investedCapital : previousCostBasis * initialAmount + previousCostBasis * (currentAmount - initialAmount);
+                InvestedCapital = investedCapital;
             }
+
             PreviousCostBasis = previousCostBasis != 0 ? previousCostBasis : 1;
 
         }
